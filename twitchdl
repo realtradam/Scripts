@@ -1,0 +1,4 @@
+#!/bin/bash
+
+streamlink -o $1 $2 audio && ffmpeg -i $1 $1.mp3 && rm $1 && rsync -P $1.mp3 phablet@192.168.1.18:Downloads/$1.mp3 && rm $1.mp3
+

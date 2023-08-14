@@ -1,0 +1,33 @@
+#!/bin/bash
+
+device="UGTABLET 10 inch PenTablet Pen (0)"
+
+#total_width=5280.0
+#total_height=2820.0
+
+#touch_area_width=1920.0
+#touch_area_height=1200.0
+#touch_area_x_offset=1920.0
+#touch_area_y_offset=791.0
+
+total_width=3520 #3640.0
+total_height=1080 #2560.0
+
+touch_area_width=1600 #1080.0
+touch_area_height=900 #1728.0
+touch_area_x_offset=0 #3640.0
+touch_area_y_offset=0 #832.0
+
+echo $touch_area_width
+
+C0=$(bc -l <<< $touch_area_width/$total_width)
+C2=$(bc -l <<< $touch_area_height/$total_height)
+C1=$(bc -l <<< $touch_area_x_offset/$total_width)
+C3=$(bc -l <<< $touch_area_y_offset/$total_height)
+
+echo Device: $device
+MATRIX="$C0 0 $C1 0 $C2 $C3 0 0 1" #normal
+#MATRIX="0 -$C0 $C1 $C2 0 $C3 0 0 1" #rotate
+echo Calculated Matrix: $MATRIX
+
+xinput set-prop "$device" --type=float "Coordinate Transformation Matrix" $MATRIX

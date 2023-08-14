@@ -1,0 +1,5 @@
+#!/bin/bash
+
+until /usr/bin/discord; do
+	notify-send -c 'im.error' -i /home/tradam/.scripts/discordCrashHandler/Discord-Logo-Color.png 'Crash Error' 'Discord has crashed. Start this garbage up again' && paplay /home/tradam/.scripts/discordCrashHandler/disconnect.ogg
+done

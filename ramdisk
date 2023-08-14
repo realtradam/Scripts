@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mkdir /tmp/$1
+sudo mount -t tmpfs -o nodev,nosuid,noexec,nodiratime,size=$2 none /tmp/$1

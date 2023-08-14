@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+img="$(ls $1 | dmenu -m 0 -sb '#316299' -nb '#252732')"
+(cd $1; xclip -selection clipboard -t ~/thinkcenter/emotes/${img##*.} $img)

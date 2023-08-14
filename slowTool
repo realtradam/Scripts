@@ -1,0 +1,4 @@
+#!/bin/bash
+
+TMP=$(date +%F-%T)
+maim | convert - ~/Pictures/Screenshots/$TMP.png && gimp ~/Pictures/Screenshots/$TMP.png 

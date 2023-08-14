@@ -1,0 +1,3 @@
+#!/bin/bash
+
+swl /opt/resolve/bin/resolve

@@ -1,0 +1,241 @@
+#!/usr/bin/env ruby
+require 'hue'
+require 'cwiid'
+
+bridge = Hue.application
+
+colour = Hue::Colors::ColorTemperature.new(6500)
+
+
+up = []
+
+i = 0
+
+for light in bridge.lights
+	up << [bridge.bulbs[i], light]
+	i += 1
+end
+
+right = up
+left = up
+down = up
+
+state = up
+
+
+for light in up
+	puts light[1]
+	puts light[1][1]["type"]
+end
+
+for light in up
+	puts light[0]
+	light[0].alert = 'select'
+end
+
+
+for light in bridge.lights
+	puts light[1]["type"]
+	if light[1]["type"] == "Extended color light"
+		puts "detected"
+	end
+end
+
+=begin
+
+dpad 
+up is select all lights(and turn them on)
+right, left, down are 3 unique groups(and turn them on)
+down will always turn on at lowest brightness
+flash briefly when selecting a group
+
+hold home and 1 to cycle through all and press dpad to assign (up to assign to none of 3 unique groups)
+flash while on selected bulb
+
+A is regular light
+B is coloured light(if availible)
+
+=end
+
+loop do
+	begin
+		puts "Searching for wiimote(press 1 + 2)"
+		wiimote = WiiMote.new
+		puts "Wiimote Connected"
+		wiimote.rpt_mode = wiimote.rpt_mode = WiiMote::RPT_BTN | WiiMote::RPT_ACC
+		
+		wiimote.led = 9
+		wiimote.get_state
+
+		
+			begin
+				wiimote.get_state
+				
+				if ( wiimote.buttons & WiiMote::BTN_HOME ) != 0
+					for bulb in state
+						if bulb[0].on?
+							bulb[0].off
+						else
+							bulb[0].on
+						end
+					end
+					sleep(0.5)
+				end
+				
+				if ( wiimote.buttons & WiiMote::BTN_A ) != 0
+					for bulb in state
+						if bulb[0].on?
+							colour = Hue::Colors::ColorTemperature.new(((([[wiimote.acc[1].to_f,150.0].min,100.0].max - 100.0)/50.0) * 4500) + 2000)
+							bulb[0].color = colour
+						end
+					end
+				end
+				
+				if ( wiimote.buttons & WiiMote::BTN_B ) != 0
+					for bulb in state
+						if bulb[0].on? && (bulb[1][1]["type"] == "Extended color light")
+							colour = Hue::Colors::HueSaturation.new((([[wiimote.acc[1].to_f,150.0].min,100.0].max - 100.0)/50.0) * 65535, 255)
+							bulb[0].color = colour
+						end
+					end
+				end
+				
+				if ( wiimote.buttons & WiiMote::BTN_PLUS ) != 0
+					for bulb in state
+						if bulb[0].on?
+							if ( bulb[0].brightness + 15 ) < 255
+								bulb[0].brightness += 15
+							else
+								bulb[0].brightness = 255
+							end
+						end
+					end
+				end
+				
+				if ( wiimote.buttons & WiiMote::BTN_MINUS ) != 0
+					for bulb in state
+						if bulb[0].on?
+							if ( bulb[0].brightness - 15 ) > 1 
+								bulb[0].brightness -= 15
+							else
+								bulb[0].brightness = 1
+							end
+						end
+					end
+				end
+				
+				if ( wiimote.buttons & WiiMote::BTN_UP ) != 0
+					state = up
+					for bulb in state
+						puts 'a'
+						puts bulb[0]
+						bulb[0].on
+						bulb[0].alert = 'select'
+					end
+				end				
+				if ( wiimote.buttons & WiiMote::BTN_RIGHT ) != 0
+					if (( wiimote.buttons & WiiMote::BTN_1 ) != 0)
+					wiimote.led = 6
+					right = []
+						for bulb in up
+							bulb[0].alert = 'lselect'
+							input = 'none'
+							while input == 'none'
+								wiimote.get_state
+								if (( wiimote.buttons & WiiMote::BTN_A ) != 0)
+									right << bulb
+									bulb[0].alert = 'none'
+									input = 'end'
+									sleep(0.5)
+								elsif (( wiimote.buttons & WiiMote::BTN_B ) != 0)
+									bulb[0].alert = 'none'
+									input = 'end'
+									sleep(0.5)
+								end
+								sleep(0.001)
+							end
+						end
+						state = right
+						wiimote.led = 9
+					else
+						state = right
+						for bulb in state
+							bulb[0].on
+							bulb[0].alert = 'select'
+						end
+					end
+				end				
+				if ( wiimote.buttons & WiiMote::BTN_DOWN ) != 0
+					if (( wiimote.buttons & WiiMote::BTN_1 ) != 0)
+					wiimote.led = 6
+					down = []
+						for bulb in up
+							bulb[0].alert = 'lselect'
+							input = 'none'
+							while input == 'none'
+								wiimote.get_state
+								if (( wiimote.buttons & WiiMote::BTN_A ) != 0)
+									down << bulb
+									bulb[0].alert = 'none'
+									input = 'end'
+									sleep(0.5)
+								elsif (( wiimote.buttons & WiiMote::BTN_B ) != 0)
+									bulb[0].alert = 'none'
+									input = 'end'
+									sleep(0.5)
+								end
+								sleep(0.001)
+							end
+						end
+						state = down
+						wiimote.led = 9
+					else
+						state = down
+						for bulb in state
+							bulb[0].on
+							bulb[0].brightness = 1
+						end
+					end
+				end			
+				if ( wiimote.buttons & WiiMote::BTN_LEFT ) != 0
+					if (( wiimote.buttons & WiiMote::BTN_1 ) != 0)
+					wiimote.led = 6
+					left = []
+						for bulb in up
+							bulb[0].alert = 'lselect'
+							input = 'none'
+							while input == 'none'
+								wiimote.get_state
+								if (( wiimote.buttons & WiiMote::BTN_A ) != 0)
+									left << bulb
+									bulb[0].alert = 'none'
+									input = 'end'
+									sleep(0.5)
+								elsif (( wiimote.buttons & WiiMote::BTN_B ) != 0)
+									bulb[0].alert = 'none'
+									input = 'end'
+									sleep(0.5)
+								end
+								sleep(0.001)
+							end
+						end
+						state = left
+						wiimote.led = 9
+					else
+						state = left
+						for bulb in state
+							bulb[0].on
+							bulb[0].alert = 'select'
+						end
+					end
+				end
+			sleep(0.001)
+			end until ( wiimote.buttons & WiiMote::BTN_2 ) != 0
+		wiimote.close
+		puts "Wiimote Disconnected"
+	rescue RuntimeError => e
+		puts e.message
+		puts "Trying to connect again..."
+	end
+end
+

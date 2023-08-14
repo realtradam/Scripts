@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#SPEAKERS="alsa_output.pci-0000_00_1f.3.analog-stereo"
+SPEAKERS="bluez_sink.2C_41_A1_C8_53_63.a2dp_sink"
+MICROPHONE="alsa_input.usb-BLUE_MICROPHONE_Blue_Snowball_AYM_2018_05_30_16341-00.mono-fallback"
+
+# virtual1=fSource gets the audio source your want to forward and listen to(browser, media player, etc)
+# result gets fSource + mic and it gets sent to your voip software(discord, etc)
+pactl load-module module-null-sink sink_name=fSource sink_properties=device.description="fSource"
+pactl load-module module-null-sink sink_name=result sink_properties=device.description="result"
+
+pactl load-module module-loopback source=fSource.monitor sink=$SPEAKERS
+pactl load-module module-loopback source=fSource.monitor sink=result
+pactl load-module module-loopback source=$MICROPHONE sink=result

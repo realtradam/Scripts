@@ -1,0 +1,25 @@
+#!/bin/bash
+# simple dmenu config editor for archbang
+# poorly written by Mr Green
+#
+
+# configs you can edit
+choices="mirrorlist\npacman\nlocales\nopenbox-rc\nopenbox-menu"
+
+# dmenu to give prompt and choices
+chosen=$(echo -e "$choices" | dmenu -fn 'Sans Mono-10' -nb '#000000' -nf '#FFFFFF' -sb '#96A79F' -sf '#EEEEEE' -i -p "Select config file to edit..." )
+
+# terminal command
+comm="lxterminal -e nano"
+
+opath="~/.config/openbox"
+
+case "$chosen" in
+	mirrorlist) sudo ${comm} /etc/pacman.d/mirrorlist ;;
+	pacman) sudo ${comm} /etc/pacman.conf ;;
+	locales) sudo ${comm} /etc/locale.gen;;
+	openbox-rc) ${comm} ${opath}/rc.xml ;;
+	openbox-menu) ${comm} ${opath}/menu.xml ;;
+esac
+
+

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ffmpeg -i "$1" -vcodec dnxhd -acodec pcm_s16le -s 1280x720 -r 30000/1001 -b:v 60M "$2"

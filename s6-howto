@@ -1,0 +1,18 @@
+echo '
+Services:
+List all active services			s6-rc -a list
+List all services that depend on foo		s6-rc-db -d all-dependencies foo
+Stop a service/bundle				s6-rc -d change service_name
+Start a service/bundle				s6-rc -u change service_name
+List all active services			s6-rc -a list
+List all services/bundles in the database	s6-rc-db list all
+
+Bundles:
+To create a bundle				s6-rc-bundle add <bundle> <service1> <service2> <service3>
+To delete a bundle				s6-rc-bundle delete <bundle>
+To remove something from an existing bundle	s6-rc-bundle-update delete <bundle> <service>
+To add something to an existing bundle		s6-rc-bundle-update add <bundle> <service>
+
+To edit who runs something --> /etc/s6/sv
+'
+

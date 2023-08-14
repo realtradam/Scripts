@@ -1,0 +1,7 @@
+#!/bin/bash
+
+mkdir /tmp/sims3
+sudo mount -t tmpfs -o nodev,nosuid,noexec,nodiratime,size=1G none /tmp/sims3
+mkdir /tmp/sims3/{Thumbnails,WorldCaches}
+WINEPREFIX=~/.local/share/wineprefixes/sims3/ wine "/home/tradam/.local/share/wineprefixes/sims3/drive_c/Program Files/Electronic Arts/The Sims 3/Game/Bin/TS3W.exe"
+sudo umount /tmp/sims3

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+pw-jack ~/sonic-pi/app/build/gui/qt/sonic-pi

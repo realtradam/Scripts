@@ -1,0 +1,3 @@
+#!/bin/bash
+
+maim | tee >(convert - ~/Pictures/IFSE/IFSE_$(date +%F-%H_%M_%S).png) | xclip -selection clipboard -t image/png

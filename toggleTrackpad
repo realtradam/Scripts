@@ -1,0 +1,8 @@
+#!/bin/bash
+TRACKPADSTATE=$(xinput --list-props "SynPS/2 Synaptics TouchPad" | head -2 | tail -1 | grep '.$' -o)
+if [[ "$TRACKPADSTATE" == "0" ]]
+then
+	xinput enable "SynPS/2 Synaptics TouchPad"
+else
+	xinput disable "SynPS/2 Synaptics TouchPad"
+fi

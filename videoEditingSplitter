@@ -1,0 +1,12 @@
+#!/bin/bash
+
+mkdir $1
+
+ffmpeg -i $1.mkv \
+-map 0:v -c copy $1/video_h264.mp4 \
+-map 0:a:0 -c copy $1/all.aac \
+-map 0:a:1 -c copy $1/ch1.aac \
+-map 0:a:2 -c copy $1/ch2.aac \
+-map 0:a:1 -c copy $1/ch3.aac \
+-map 0:a:2 -c copy $1/ch4.aac \
+

@@ -1,0 +1,5 @@
+#!/bin/bash
+sudo modprobe evdi udl
+sudo swl /usr/lib/displaylink/DisplayLinkManager
+sleep 2
+/home/tradam/.screenlayout/2WideMonitor.sh

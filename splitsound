@@ -1,0 +1,13 @@
+#!/bin/bash
+
+SPEAKERS="bluez_sink.2C_41_A1_C8_53_63.a2dp_sink"
+
+# Create the null sinks
+# setInPlayback gets your audio source (mplayer ...) only
+# setInRecording gets setInPlayback + micro
+pactl load-module module-null-sink sink_name=OBSGame sink_properties=device.description="OBSGame"
+pactl load-module module-null-sink sink_name=OBSChat sink_properties=device.description="OBSChat"
+pactl load-module module-null-sink sink_name=OBSMusic sink_properties=device.description="OBSMusic"
+pactl load-module module-loopback source=OBSGame.monitor sink=$SPEAKERS
+pactl load-module module-loopback source=OBSChat.monitor sink=$SPEAKERS
+pactl load-module module-loopback source=OBSMusic.monitor sink=$SPEAKERS
